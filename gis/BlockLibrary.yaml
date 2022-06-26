@@ -1,0 +1,262 @@
+uid: lochmueller:blockly:gis
+tags: []
+props:
+  parameters: []
+  parameterGroups: []
+timestamp: Jun 23, 2022, 2:05:57 PM
+component: BlockLibrary
+config:
+  name: Geographic information system
+slots:
+  blocks:
+    - component: BlockType
+      config:
+        args0:
+          - name: POSITION1
+            type: input_value
+          - name: POSITION2
+            type: input_value
+        colour: 300
+        helpUrl: ""
+        inputsInline: false
+        message0: Distance between %1 and %2
+        output: Number
+        tooltip: Return the distance between to GEO locations
+        type: gis_distance
+      slots:
+        code:
+          - component: BlockCodeTemplate
+            config:
+              template: "{{utility:geo_distance}}({{input:POSITION1}}, {{input:POSITION2}})"
+    - component: BlockType
+      config:
+        args0:
+          - name: POSITION
+            type: input_value
+            check: GeoPosition
+          - name: FORMAT
+            options:
+              - - hddd° mm′ ss.ss″
+                - hdms
+              - - hddd° mm.mmm′
+                - hdm
+              - - hddd.ddddd°
+                - hdd
+              - - ±ddd.ddddd°
+                - d
+            type: field_dropdown
+        colour: 300
+        helpUrl: ""
+        inputsInline: true
+        message0: Format %1 as %2
+        output: String
+        tooltip: Return position as formated string. Check https://de.wikipedia.org/wiki/Geographische_Koordinaten
+        type: gis_format_position
+      slots:
+        code:
+          - component: BlockCodeTemplate
+            config:
+              template: "{{utility:gis_format_position}}({{input:POSITION}}, '{{field:FORMAT}}')"
+    - component: BlockType
+      config:
+        args0:
+          - name: VALUE
+            type: input_value
+            check: Number
+          - name: TO
+            options:
+              - - Inch
+                - in
+              - - Foot
+                - ft
+              - - Yard
+                - yd
+              - - Chain
+                - ch
+              - - Furlong
+                - fur
+              - - Mile
+                - mi
+              - - League
+                - lea
+            type: field_dropdown
+        colour: 300
+        helpUrl: ""
+        inputsInline: true
+        message0: Convert %1 meter to %2
+        output: Number
+        tooltip: Convert the meter into another unit
+        type: gis_convert_from_meter
+      slots:
+        code:
+          - component: BlockCodeTemplate
+            config:
+              template: "{{utility:geo_convert_from_meter}}({{input:VALUE}}, '{{field:TO}}')"
+    - component: BlockType
+      config:
+        args0:
+          - name: VALUE
+            type: input_value
+            check: Number
+          - name: UNIT
+            options:
+              - - Inch
+                - in
+              - - Foot
+                - ft
+              - - Yard
+                - yd
+              - - Chain
+                - ch
+              - - Furlong
+                - fur
+              - - Mile
+                - mi
+              - - League
+                - lea
+            type: field_dropdown
+        colour: 300
+        helpUrl: ""
+        inputsInline: true
+        message0: Convert %1 in unit %2 to meter
+        output: Number
+        tooltip: Convert the number into meter
+        type: gis_convert_to_meter
+      slots:
+        code:
+          - component: BlockCodeTemplate
+            config:
+              template: "{{utility:geo_convert_to_meter}}({{input:VALUE}}, '{{field:UNIT}}')"
+    - component: BlockType
+      config:
+        args0:
+          - max: 90
+            min: -90
+            name: LATITUDE
+            precision: 1e-7
+            type: field_number
+          - max: 180
+            min: -180
+            name: LONGITUDE
+            precision: 1e-7
+            type: field_number
+        colour: 300
+        helpUrl: ""
+        inputsInline: true
+        message0: Position at latitude %1 and longitude %2
+        output: GeoPosition
+        type: gis_position
+      slots:
+        code:
+          - component: BlockCodeTemplate
+            config:
+              template: "{{utility:geo_position}}({{field:LATITUDE}}, {{field:LONGITUDE}})"
+    - component: BlockType
+      config:
+        args0:
+          - name: LATITUDE
+            type: input_value
+          - name: LONGITUDE
+            type: input_value
+        colour: 300
+        helpUrl: ""
+        inputsInline: true
+        message0: Position at latitude %1 and longitude %2
+        output: GeoPosition
+        type: gis_position_by_block
+      slots:
+        code:
+          - component: BlockCodeTemplate
+            config:
+              template: "{{utility:geo_position}}({{input:LATITUDE}}, {{input:LONGITUDE}})"
+  utilities:
+    - component: UtilityFunction
+      config:
+        code: >-
+          function geo_distance(position1, position2) {
+            var lat1 = position1.latitude;
+            var lat2 = position2.latitude;
+            var lon1 = position1.longitude;
+            var lon2 = position2.longitude;
+            var R = 6371e3; // metres
+            var o1 = lat1 * Math.PI/180;
+            var o2 = lat2 * Math.PI/180;
+            var Ao = (lat2-lat1) * Math.PI/180;
+            var Ab = (lon2-lon1) * Math.PI/180;
+            var a = Math.sin(Ao/2) * Math.sin(Ao/2) +
+            Math.cos(o1) * Math.cos(o2) *
+            Math.sin(Ab/2) * Math.sin(Ab/2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+          }
+        name: geo_distance
+    - component: UtilityFunction
+      config:
+        code: >-
+          function geo_position(latitude, longitude) { 
+            return {'latitude': latitude, 'longitude': longitude};
+          }
+        name: geo_position
+    - component: UtilityFunction
+      config:
+        code: >-
+          function gis_format_position(position, format) { 
+            switch(format) {
+              case 'hdd':
+                return 'todo';
+              case 'hdm':
+                return 'todo';
+              case 'hdms':
+                return 'todo';
+              case 'd':
+              default:
+                return 'todo';
+            }
+          }
+        name: gis_format_position
+    - component: UtilityFunction
+      config:
+        code: >-
+          function geo_convert_from_meter(value, to) {
+            switch(to) {
+              case 'in':
+                return value * 39.3701;
+              case 'ft':
+                return value * 3.2808;
+              case 'yd':
+                return value * 1.09361;
+              case 'ch':
+                return value * 0.0497097;
+              case 'fur':
+                return value * 0.00497096;
+              case 'mi':
+                return value * 0.000621371;
+              case 'lea':
+                return value * 0.000179986;
+            }
+            return NaN;
+          }
+        name: geo_convert_from_meter
+    - component: UtilityFunction
+      config:
+        code: >-
+          function geo_convert_to_meter(value, from) {
+            switch(from) {
+              case 'in':
+                return value / 39.3701;
+              case 'ft':
+                return value / 3.2808;
+              case 'yd':
+                return value / 1.09361;
+              case 'ch':
+                return value / 0.0497097;
+              case 'fur':
+                return value / 0.00497096;
+              case 'mi':
+                return value / 0.000621371;
+              case 'lea':
+                return value / 0.000179986;
+            }
+            return NaN;
+          }
+        name: geo_convert_to_meter
