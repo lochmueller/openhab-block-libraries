@@ -3,7 +3,7 @@ tags: []
 props:
   parameters: []
   parameterGroups: []
-timestamp: Jun 23, 2022, 2:05:57 PM
+timestamp: Jul 5, 2022, 5:31:16 PM
 component: BlockLibrary
 config:
   name: Geographic information system
@@ -12,11 +12,13 @@ slots:
     - component: BlockType
       config:
         args0:
-          - name: POSITION1
+          - check: GeoPosition
+            name: POSITION1
             type: input_value
-          - name: POSITION2
+          - check: GeoPosition
+            name: POSITION2
             type: input_value
-        colour: 300
+        colour: 230
         helpUrl: ""
         inputsInline: false
         message0: Distance between %1 and %2
@@ -45,12 +47,12 @@ slots:
               - - ±ddd.ddddd°
                 - d
             type: field_dropdown
-        colour: 300
+        colour: 150
         helpUrl: ""
         inputsInline: true
         message0: Format %1 as %2
         output: String
-        tooltip: Return position as formated string. Check https://de.wikipedia.org/wiki/Geographische_Koordinaten
+        tooltip: Return position as formatted string. Check https://de.wikipedia.org/wiki/Geographische_Koordinaten
         type: gis_format_position
       slots:
         code:
@@ -115,7 +117,7 @@ slots:
               - - League
                 - lea
             type: field_dropdown
-        colour: 300
+        colour: 230
         helpUrl: ""
         inputsInline: true
         message0: Convert %1 in unit %2 to meter
